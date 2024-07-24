@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\errors.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\expression.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\formatter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\generatec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\interpret.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\options.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\statement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\token.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\tokenizer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\common.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\errors.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\expression.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\formatter.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\generatec.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\interpret.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\options.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\statement.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tinybasic.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\token.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\filetokeniser.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\buffertokenizer.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tokenizer.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
