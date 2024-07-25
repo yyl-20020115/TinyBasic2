@@ -402,6 +402,8 @@ static int tiny_basic_repl(int line_length, LanguageOptions* loptions) {
 				break;
 			}
 #endif
+			int ln = 0, lm = 0;
+			char* ps = 0, * bs = 0;
 			line_buffer = trim_line(line_buffer, line_length);
 			//you can get help with command HELP
 			if (0 == tinybasic_strcmp(line_buffer, COMMAND_HELP)
@@ -413,10 +415,9 @@ static int tiny_basic_repl(int line_length, LanguageOptions* loptions) {
 				|| 0 == tinybasic_strcmp(line_buffer, DEFAULT_COMMAND_RUN)) {
 				//RUN
 				//RUN LINE-NUMBER
-				int ln = 0;
-				if (line_buffer[3] == _T(' ')
-					&& (1 == sscanf(line_buffer + 4, _T("%d"), &ln))
-					&& ln >= 0 && ln < REPL_MAX_LINES) {
+				if ((ps = strchr(line_buffer, _T(' '))) != 0)
+					if((1 == sscanf(ps + 1, _T("%d"), &ln)
+						&& ln >= 0 && ln < REPL_MAX_LINES)) {
 				}
 				int total_buffer_length = 1;
 				for (int t = ln; t < REPL_MAX_LINES; t++) {
@@ -442,39 +443,34 @@ static int tiny_basic_repl(int line_length, LanguageOptions* loptions) {
 				//LIST
 				//LIST LINE-NUMBER
 				//LIST LINE-NUMBER-START LINE-NUMBER-END
-				int ln = 0, lm = 0;
-				TCHAR* ps = 0;
 				if (strlen(line_buffer) == 5) {
 					lm = REPL_MAX_LINES;
 				}
-				else if (line_buffer[4] == _T(' ')
-					&& ((ps = strchr(line_buffer, _T('-'))) - line_buffer) > 4
-					&& (1 == sscanf(line_buffer + 5, _T("%d"), &ln))
-					&& (1 == sscanf(ps + 1, _T("%d"), &lm))) {
+				else if (((ps = strchr(line_buffer, _T(' '))) != 0)
+					&& ((bs = strchr(line_buffer, _T('-'))) - line_buffer) > 4
+					&& (1 == sscanf(ps + 1, _T("%d"), &ln))
+					&& (1 == sscanf(bs + 1, _T("%d"), &lm))) {
 				}
-				else if (line_buffer[4] == _T(' ')
-					&& (1 == sscanf(line_buffer + 5, _T("%d"), &ln))) {
+				else if (((ps = strchr(line_buffer, _T(' ')))!=0)
+					&& (1 == sscanf(ps + 1, _T("%d"), &ln))) {
 					lm = REPL_MAX_LINES;
 				}
 
 				ln = ln < 0 || ln>REPL_MAX_LINES ? 0 : ln;
-				lm = lm <0 || lm > REPL_MAX_LINES ? REPL_MAX_LINES : lm;
-				for (int t = ln; t < lm; t++) {
+				lm = lm <= ln ? ln : lm;
+				lm = lm >= REPL_MAX_LINES ? lm = REPL_MAX_LINES - 1 : lm;
+				for (int t = ln; t <= lm; t++) {
 					if (list[t] == NULL) continue;
 					printf(list[t]);
 				}
 			}
 			//
-			else if (line_buffer[0] >= _T('0') && line_buffer[0] <= _T('9')) {
+			else if (1 == sscanf(line_buffer, _T("%d "), &ln)
+				&& ln >= 0 && ln < REPL_MAX_LINES) {
 				//you can edit a line with line number or append a line to last line number
 				//or redirect current line with a new line number
-				int ln = 0;
-				if (1 == sscanf(line_buffer, _T("%d"), &ln)
-					&& ln >= 0 && ln < REPL_MAX_LINES)
-				{
-					if (list[ln] != NULL) free(list[ln]);
-					list[ln] = _strdup(line_buffer);
-				}
+				if (list[ln] != NULL) free(list[ln]);
+				list[ln] = _strdup(line_buffer);
 			}
 			else if (line_buffer[0] == _T('?')) //show one line
 			{

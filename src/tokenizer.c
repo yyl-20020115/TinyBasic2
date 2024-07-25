@@ -1,5 +1,6 @@
 #include <string.h>
 #include "tokenizer.h"
+#include "malloc.h"
 /*
  * Identify the various recognised symbols
  * params:
@@ -93,3 +94,19 @@ TokenClass identify_compound_symbol(const TCHAR* symbol) {
     else
         return TOKEN_SYMBOL;
 }
+
+/*
+ * Destructor for a TokenStream
+ * params:
+ *   TokenStream*   token_stream   the doomed token stream
+ */
+void destroy_ts(TokenStream* token_stream) {
+    if (token_stream) {
+        if (token_stream->data) {
+            free(token_stream->data);
+            token_stream->data = NULL;
+        }
+        free(token_stream);
+    }
+}
+

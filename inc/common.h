@@ -22,7 +22,7 @@
 #endif
 
 #ifndef USE_WCHAR
-#define USE_WCHAR
+//#define USE_WCHAR
 #endif
 
 #ifndef USE_CHINESE

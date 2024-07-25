@@ -71,4 +71,5 @@ TokenStream* new_BufferTokenStream(const TCHAR* input, int buffer_size);
 TokenClass identify_symbol(int ch);
 TokenClass identify_word(const TCHAR* word);
 TokenClass identify_compound_symbol(const TCHAR* symbol);
+void destroy_ts(TokenStream* token_stream);
 #endif

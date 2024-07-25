@@ -135,41 +135,27 @@ static void store_character(TokeniserState* state) {
 		/* now add the character to the token */
 		length = (int)strlen(state->content);
 #ifndef USE_WCHAR
-		char* p = (char*)&state->ch;
-		int s = (int)strlen(p);
-		strncpy(state->content + length, p, s);
+		if (state->ch != EOF) {
+			if ((state->ch & 0xff00) != 0)
+			{
+				state->content[length++] = (char)(state->ch & 0xff);
+				state->content[length++] = (char)((state->ch >> 8) & 0xff);
+				state->content[length] = _T('\0');
+			}
+			else {
+				state->content[length++] = state->ch;
+				state->content[length] = _T('\0');
+			}
+		}
+		else {
+			state->content[length] = _T('\0');
+		}
 #else
 		state->content[length++] = state->ch;
 		state->content[length] = _T('\0');
 #endif
 	}
 }
-
-/*
- * Identify compound (multi-character) symbols.
- * Also identifies some single-character symbols that can form
- * the start of multi-character symbols.
- * params:
- *   TCHAR*   symbol   the symbol to identify
- * returns:
- *   TokenClass       the identification
- */
-static TokenClass identify_compound_symbol(const TCHAR* symbol) {
-	if (!strcmp(symbol, _T("<>"))
-		|| !strcmp(symbol, _T("><")))
-		return TOKEN_UNEQUAL;
-	else if (!strcmp(symbol, _T("<")))
-		return TOKEN_LESSTHAN;
-	else if (!strcmp(symbol, _T("<=")))
-		return TOKEN_LESSOREQUAL;
-	else if (!strcmp(symbol, _T(">")))
-		return TOKEN_GREATERTHAN;
-	else if (!strcmp(symbol, _T(">=")))
-		return TOKEN_GREATEROREQUAL;
-	else
-		return TOKEN_SYMBOL;
-}
-
 
 /*
  * Level 1 Tokeniser Routines
@@ -287,7 +273,7 @@ static void word_mode(TokeniserState* state) {
 	/* add letters and digits to the token */
 	if ((state->ch >= _T('A') && state->ch <= _T('Z')) ||
 		(state->ch >= _T('a') && state->ch <= _T('z'))
-		|| state->ch > 0x7f
+		|| state->ch >= 0x80
 		) {
 		store_character(state);
 		state->ch = read_character(state, &state->tch);
@@ -504,21 +490,6 @@ static int get_line(TokenStream* token_stream) {
 	return data->line;
 }
 
-/*
- * Destructor for a TokenStream
- * params:
- *   TokenStream*   token_stream   the doomed token stream
- */
-static void destroy(TokenStream* token_stream) {
-	if (token_stream) {
-		if (token_stream->data) {
-			free(token_stream->data);
-			token_stream->data = NULL;
-		}
-		free(token_stream);
-	}
-}
-
 
 /*
  * Constructors
@@ -545,7 +516,7 @@ TokenStream* new_BufferTokenStream(const TCHAR* input, int buffer_size) {
 	/* initialise methods */
 	this->next = next;
 	this->get_line = get_line;
-	this->destroy = destroy;
+	this->destroy = destroy_ts;
 
 	/* initialise data */
 	data->input = input;

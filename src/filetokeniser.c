@@ -11,9 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "token.h"
-#include "tokenizer.h"
 #include "common.h"
+#include "tokenizer.h"
 
 
 
@@ -122,45 +121,6 @@ static void store_character(TokeniserState* state) {
 }
 
 /*
- * Identify the various recognised symbols
- * params:
- *   int   ch     the character to identify
- * returns:
- *   TokenClass   the token class recognised by the parser
- */
-static TokenClass identify_symbol(int ch) {
-	switch (ch) {
-	case _T('+'):
-		return TOKEN_PLUS;
-		break;
-	case _T('-'):
-		return TOKEN_MINUS;
-		break;
-	case _T('*'):
-		return TOKEN_MULTIPLY;
-		break;
-	case _T('/'):
-		return TOKEN_DIVIDE;
-		break;
-	case _T('='):
-		return TOKEN_EQUAL;
-		break;
-	case _T('('):
-		return TOKEN_LEFT_PARENTHESIS;
-		break;
-	case _T(')'):
-		return TOKEN_RIGHT_PARENTHESIS;
-		break;
-	case _T(','):
-		return TOKEN_COMMA;
-		break;
-	default:
-		return TOKEN_SYMBOL;
-	}
-}
-
-
-/*
  * Level 1 Tokeniser Routines
  */
 
@@ -196,9 +156,7 @@ static void default_mode(TokeniserState* state) {
 	/* alphabetic characters start a word */
 	else if ((state->ch >= _T('A') && state->ch <= _T('Z')) ||
 		(state->ch >= _T('a') && state->ch <= _T('z'))
-#ifdef USE_WCHAR
-		|| state->ch > LAST_ANSI
-#endif
+		|| state->ch > 0x7f
 		) {
 		data->start_line = data->line;
 		data->start_pos = data->pos;
@@ -278,9 +236,7 @@ static void word_mode(TokeniserState* state) {
 	/* add letters and digits to the token */
 	if ((state->ch >= _T('A') && state->ch <= _T('Z')) ||
 		(state->ch >= _T('a') && state->ch <= _T('z'))
-#ifdef USE_WCHAR
-		|| state->ch >= 0x100
-#endif
+		|| state->ch >= 0x80
 		) {
 		store_character(state);
 		state->ch = read_character(state, &state->tch);
@@ -497,21 +453,6 @@ static int get_line(TokenStream* token_stream) {
 	return data->line;
 }
 
-/*
- * Destructor for a TokenStream
- * params:
- *   TokenStream*   token_stream   the doomed token stream
- */
-static void destroy(TokenStream* token_stream) {
-	if (token_stream) {
-		if (token_stream->data) {
-			free(token_stream->data);
-			token_stream->data = NULL;
-		}
-		free(token_stream);
-	}
-}
-
 
 /*
  * Constructors
@@ -538,7 +479,7 @@ TokenStream* new_TokenStream(FILE* input) {
 	/* initialise methods */
 	this->next = next;
 	this->get_line = get_line;
-	this->destroy = destroy;
+	this->destroy = destroy_ts;
 
 	/* initialise data */
 	data->input = input;
