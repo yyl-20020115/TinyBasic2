@@ -407,7 +407,8 @@ static int tiny_basic_repl(int line_length, LanguageOptions* loptions) {
 			line_buffer = trim_line(line_buffer, line_length);
 			//you can get help with command HELP
 			if (0 == tinybasic_strcmp(line_buffer, COMMAND_HELP)
-				|| 0 == tinybasic_strcmp(line_buffer, DEFAULT_COMMAND_HELP)) {
+				|| 0 == tinybasic_strcmp(line_buffer, DEFAULT_COMMAND_HELP)
+				|| line_buffer[0]=='?') {
 				printf(TEXT_HELP);
 			}
 			//you can run the program with command RUN
